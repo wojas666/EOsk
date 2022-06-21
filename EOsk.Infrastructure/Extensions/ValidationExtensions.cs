@@ -33,7 +33,7 @@ namespace EOsk.Infrastructure.Extensions
             if (string.IsNullOrEmpty(input))
                 return false;
 
-            if (!int.TryParse(input, out _))
+            if (!long.TryParse(input, out _))
                 return false;
 
             if (input.Length != peselLength)
@@ -41,13 +41,15 @@ namespace EOsk.Infrastructure.Extensions
 
             for(int i = 0; i < peselCheckValues.Length; i++)
             {
-                peselControl += (int)input[i] * peselCheckValues[i];
+                var currentNumber = (short)Char.GetNumericValue(input, i);
+                peselControl += currentNumber * peselCheckValues[i];
             }
 
-            var lastNumber = (int)peselControl.ToString().Last();
-            lastNumber -= 10;
+            var stringPeselControl = peselControl.ToString();
+            var lastNumber = Char.GetNumericValue(stringPeselControl, stringPeselControl.Length - 1);
+            lastNumber = 10 - lastNumber;
 
-            if (lastNumber == (int)input[10])
+            if (lastNumber == Char.GetNumericValue(input, peselLength-1))
                 return true;
             else
                 return false;
