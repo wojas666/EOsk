@@ -10,6 +10,10 @@ namespace EOsk.Infrastructure.Responses
     {
         public Guid Id { get; set; }
 
+        public bool IsSucces { get; set; } = true;
+
+        public List<string> Errors { get; set; }
+
         public string Message { get; set; }
     }
 }
