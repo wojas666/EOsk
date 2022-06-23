@@ -1,4 +1,5 @@
-﻿using MassTransit;
+﻿using EOsk.Infrastructure.Events.Instructors.Requestes.Queries;
+using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -27,6 +28,9 @@ namespace EOsk.Infrastructure.EventBus
                         hostConfig.Password(rabbitMq.Password);
                     });
                 }));
+
+                configure.AddRequestClient<GetInstructorByIdRequest>();
+                configure.AddRequestClient<GetInstructorListRequest>();
             });
 
             return services;

@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using System.Reflection;
 using MassTransit;
 using AutoMapper;
+using EOsk.Instructor.Api.Features.Handlers.Queries;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,7 +37,10 @@ builder.Configuration.GetSection("RabbitMQ").Bind(rabbitmqOption);
 builder.Services.AddMassTransit(configure =>
 {
     configure.AddConsumer<CreateInstructorCommandHandler>();
+    configure.AddConsumer<GetInstructorByIdRequestHandler>();
+    configure.AddConsumer<GetInstructorListRequestHandler>();
 
+    // Of course to refactor ...
     configure.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>
         {
             config.Host(new Uri(rabbitmqOption.ConnectionString), hostconfig =>
@@ -54,6 +58,28 @@ builder.Services.AddMassTransit(configure =>
                 });
 
                 endpoint.ConfigureConsumer<CreateInstructorCommandHandler>(provider);
+            });
+
+            config.ReceiveEndpoint("get_instructor_by_id", endpoint =>
+            {
+                endpoint.PrefetchCount = 16;
+                endpoint.UseMessageRetry(retryConfig =>
+                {
+                    retryConfig.Interval(2, 100);
+                });
+
+                endpoint.ConfigureConsumer<GetInstructorByIdRequestHandler>(provider);
+            });
+
+            config.ReceiveEndpoint("get_instructor_list", endpoint =>
+            {
+                endpoint.PrefetchCount = 16;
+                endpoint.UseMessageRetry(retryConfig =>
+                {
+                    retryConfig.Interval(2, 100);
+                });
+
+                endpoint.ConfigureConsumer<GetInstructorListRequestHandler>(provider);
             });
         }));
     });

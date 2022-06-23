@@ -53,8 +53,6 @@ namespace EOsk.Infrastructure.Extensions
                 return true;
             else
                 return false;
-
-            
         }
     }
 }

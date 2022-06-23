@@ -11,5 +11,6 @@ namespace EOsk.Instructor.Api.Profiles
             CreateMap<EOsk.Instructor.Api.Models.Instructor, CreateInstructorDto>().ReverseMap();
             CreateMap<EOsk.Instructor.Api.Models.Instructor, UpdateInstructorDto>().ReverseMap();
         }
+
     }
 }
