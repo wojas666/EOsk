@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EOsk.Infrastructure.Events.Instructors.Requestes.Commands;
 using EOsk.Infrastructure.Models.Dtos.Instructors;
 using EOsk.Infrastructure.Models.Dtos.Instructors.Validators;
 using EOsk.Infrastructure.Responses;
@@ -8,7 +9,7 @@ using MassTransit;
 
 namespace EOsk.Instructor.Api.Features.Handlers.Commands
 {
-    public class CreateInstructorCommandHandler : IConsumer<CreateInstructorDto>
+    public class CreateInstructorCommandHandler : IConsumer<CreateInstructorCommand>
     {
         private readonly IInstructorService _service;
         private readonly IMapper _mapper;
@@ -19,10 +20,10 @@ namespace EOsk.Instructor.Api.Features.Handlers.Commands
             _mapper = mapper;
         }
 
-        public async Task Consume(ConsumeContext<CreateInstructorDto> context)
+        public async Task Consume(ConsumeContext<CreateInstructorCommand> context)
         {
             // Map Dto object to datamodel.
-            var newInstructor = _mapper.Map<EOsk.Instructor.Api.Models.Instructor>(context.Message);
+            var newInstructor = _mapper.Map<EOsk.Instructor.Api.Models.Instructor>(context.Message.InstructorToCreated);
             await _service.CreateInstructor(newInstructor);
 
             await Task.CompletedTask;
